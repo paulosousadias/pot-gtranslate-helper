@@ -59,7 +59,7 @@ public class PotLoaderConverter {
 								Matcher matcher = msgidPat.matcher(line);
 								matcher.matches();
 								lineToW = matcher.group(1);
-								lineToW = lineToW.replaceAll("%\\w+", "%!");
+								lineToW = lineToW.replaceAll("%\\w+", "€€");
 							}
 							else {
 								lineToW = "";
@@ -71,6 +71,7 @@ public class PotLoaderConverter {
 					case MSG_ID:
 						if (line.startsWith("\"")) {
 							lineToW = line.substring(1, line.length() - 2);
+							lineToW = lineToW.replaceAll("%\\w+", "€€");
 							writer.write(lineToW + "\n");
 						}
 						else if (line.startsWith("msgstr \"")) {
@@ -141,7 +142,7 @@ public class PotLoaderConverter {
 			
 			Pattern msgidPat = Pattern.compile("msgid \"(.+?)\"");
 			Pattern msgidPatTwo = Pattern.compile("%\\w+");
-			Pattern msgidPatThree = Pattern.compile("%!");
+			Pattern msgidPatThree = Pattern.compile("€ ?€");
 			
 			String line;
 			String line2;
@@ -209,6 +210,13 @@ public class PotLoaderConverter {
 									System.out.println(m1 + "  " + "  #" + toReplaceList.size() + ":" + replacementsList.size() + ":" + index);
 									index++;
 								}
+								
+								System.out.println(">>  " + "  #" + toReplaceList.size() + ":" + replacementsList.size() + ":" + index);
+								//line2 = line2.replaceAll("€ €", "€€");
+								for (int i = 0; i < replacementsList.size(); i++) {
+									line2 = line2.replaceFirst("€ ?€", replacementsList.get(i));
+								}
+								
 								line += (first ? "msgstr ": "\n") + "\"" + line2 + "\"";
 								first = false;
 							}
@@ -236,6 +244,13 @@ public class PotLoaderConverter {
 									System.out.println(m1 + "  " + "  #" + toReplaceList.size() + ":" + replacementsList.size() + ":" + index);
 									index++;
 								}
+
+								System.out.println("  " + "  #" + toReplaceList.size() + ":" + replacementsList.size() + ":" + index);
+								//line2 = line2.replaceAll("€ €", "€€");
+								for (int i = 0; i < replacementsList.size(); i++) {
+									line2 = line2.replaceFirst("€ ?€", replacementsList.get(i));
+								}
+
 								line += (first ? "": "\n") + "\"" + line2 + "\"";
 								first = false;
 							}
