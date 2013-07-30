@@ -10,6 +10,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+/**
+ * @author pdias
+ * 30/07/2013
+ *
+ */
 public class PotLoaderConverter {
 
     private static final String VERSION = "0.1.1";
