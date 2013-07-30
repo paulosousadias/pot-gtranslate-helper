@@ -52,8 +52,8 @@ public class PotLoaderConverter {
 			reader = new BufferedReader(new FileReader(inFile));
 			writer = new BufferedWriter(new FileWriter(outFile));
 			
-			Pattern msgidPat = Pattern.compile("msgid \"(.+?)\"");
-			// Pattern msgidPatTwo = Pattern.compile("%\\w+");
+			Pattern msgidPat = Pattern.compile("msgid +\"(.+?)\"");
+			// Pattern msgidPatTwo = Pattern.compile("%[\\w\\.]+");
 			String line;
 			boolean headerEmptyMsgId = true;
 			while ((line = reader.readLine()) != null) {
@@ -61,18 +61,21 @@ public class PotLoaderConverter {
 				String lineToW = "";
 				switch (state) {
 					case NONE:
-						if (line.startsWith("msgid \"")) {
-							if (line.equals("msgid \"\"") && headerEmptyMsgId) {
+						// if (line.startsWith("msgid \"")) {
+						if (line.matches("msgid +\"(.*?)\"")) {
+							// if (line.equals("msgid \"\"") && headerEmptyMsgId) {
+							if (line.matches("msgid +\"\"") && headerEmptyMsgId) {
 								headerEmptyMsgId = false;
 								break;
 							}
 							
 							state = StateEnum.MSG_ID;
-							if (!line.equals("msgid \"\"")) {
+							// if (!line.equals("msgid \"\"")) {
+							if (!line.matches("msgid +\"\"")) {
 								Matcher matcher = msgidPat.matcher(line);
 								matcher.matches();
 								lineToW = matcher.group(1);
-								lineToW = lineToW.replaceAll("%\\w+", "€€");
+								lineToW = lineToW.replaceAll("%[\\w\\.]+", "€€");
 							}
 							else {
 								lineToW = "";
@@ -84,10 +87,11 @@ public class PotLoaderConverter {
 					case MSG_ID:
 						if (line.startsWith("\"")) {
 							lineToW = line.substring(1, line.length() - 2);
-							lineToW = lineToW.replaceAll("%\\w+", "€€");
+							lineToW = lineToW.replaceAll("%[\\w\\.]+", "€€");
 							writer.write(lineToW + "\n");
 						}
-						else if (line.startsWith("msgstr \"")) {
+						// else if (line.startsWith("msgstr \"")) {
+						else if (line.matches("msgid +\"(.*?)\"")) {
 							state = StateEnum.MSG_STRING;
 						}
 						else {
@@ -161,7 +165,7 @@ public class PotLoaderConverter {
 			writer = new BufferedWriter(new FileWriter(outFile));
 			
 			// Pattern msgidPat = Pattern.compile("msgid \"(.+?)\"");
-			Pattern msgidPatTwo = Pattern.compile("%\\w+");
+			Pattern msgidPatTwo = Pattern.compile("%[\\w\\.]+");
 			Pattern msgidPatThree = Pattern.compile("€ ?€");
 			
 			String line;
@@ -179,15 +183,18 @@ public class PotLoaderConverter {
 				// String lineToW = "";
 				switch (state) {
 					case NONE:
-						if (line.startsWith("msgid \"")) {
-							if (line.equals("msgid \"\"") && headerEmptyMsgId) {
+						// if (line.startsWith("msgid \"")) {
+						if (line.matches("msgid +\"(.*?)\"")) {
+							// if (line.equals("msgid \"\"") && headerEmptyMsgId) {
+							if (line.matches("msgid +\"\"") && headerEmptyMsgId) {
 								headerEmptyMsgId = false;
 								writer.write(line + "\n");
 								break;
 							}
 							
 							state = StateEnum.MSG_ID;
-							if (!line.equals("msgid \"\"")) {
+							// if (!line.equals("msgid \"\"")) {
+							if (!line.matches("msgid +\"\"")) {
 								Matcher matcher = msgidPatTwo.matcher(line);
 								while (matcher.find()) {
 									String m1 = matcher.group(0);// line.substring(matcher.start(), matcher.end());
@@ -212,7 +219,8 @@ public class PotLoaderConverter {
 								replacementsCount++;
 							}
 						}
-						else if (line.startsWith("msgstr \"")) {
+						//else if (line.startsWith("msgstr \"")) {
+						else if (line.matches("msgstr +\"(.*?)\"")) {
 							state = StateEnum.MSG_STRING;
 							// let us read from the translation
 							boolean first = true;
@@ -369,7 +377,7 @@ public class PotLoaderConverter {
 				generatePOFromGoogleTranslate(argsFl);
 				break;
 			default:
-//				Pattern msgidPatTwo = Pattern.compile("%\\w+");
+//				Pattern msgidPatTwo = Pattern.compile("%[\\w\\.]+");
 //				String line = "df %msg1 sd%msg2 s %msg3";
 //				Matcher matcher = msgidPatTwo.matcher(line);
 //				while (matcher.find()) {
