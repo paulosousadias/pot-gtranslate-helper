@@ -12,7 +12,10 @@ import java.util.regex.Pattern;
 
 public class PotLoaderConverter {
 
-    public static String replaceFileExtension(String path, String newExtension) {
+    private static final String VERSION = "0.1.1";
+	private static final String COPY_YEARS = "2013";
+
+	public static String replaceFileExtension(String path, String newExtension) {
         int lastDotPostion = path.lastIndexOf('.');
         String st = (lastDotPostion != -1) ? (path.substring(0, lastDotPostion)) : path;
         return st + "." + newExtension;
@@ -22,7 +25,7 @@ public class PotLoaderConverter {
     	NONE, MSG_ID, MSG_STRING;
     };
 
-	public static void phase1(String[] args) {
+	public static void generateFileToGoogleTranslate(String[] args) {
 		StateEnum state = StateEnum.NONE;
 		
 		BufferedReader reader = null;
@@ -32,7 +35,12 @@ public class PotLoaderConverter {
 		
 		File inFile = new File(inFileStr);
 		
-		String outFileStr = replaceFileExtension(inFile.getName(), "gen.po.txt");
+		String sufix = "gen";
+		if (args.length > 0) {
+			sufix = args[1];
+		}
+		
+		String outFileStr = replaceFileExtension(inFile.getName(), sufix + ".po.txt");
 		File outFile = new File(inFile.getParentFile() , outFileStr);
 		
 		try {
@@ -40,11 +48,11 @@ public class PotLoaderConverter {
 			writer = new BufferedWriter(new FileWriter(outFile));
 			
 			Pattern msgidPat = Pattern.compile("msgid \"(.+?)\"");
-			Pattern msgidPatTwo = Pattern.compile("%\\w+");
+			// Pattern msgidPatTwo = Pattern.compile("%\\w+");
 			String line;
 			boolean headerEmptyMsgId = true;
 			while ((line = reader.readLine()) != null) {
-				StateEnum pevState = state;
+				// StateEnum pevState = state;
 				String lineToW = "";
 				switch (state) {
 					case NONE:
@@ -119,7 +127,7 @@ public class PotLoaderConverter {
 		}
 	}
 
-	public static void phase2(String[] args) {
+	public static void generatePOFromGoogleTranslate(String[] args) {
 		StateEnum state = StateEnum.NONE;
 		
 		BufferedReader reader = null;
@@ -132,7 +140,12 @@ public class PotLoaderConverter {
 		File inFile = new File(inFileStr);
 		File inFile2 = new File(inFile2Str);
 		
-		String outFileStr = replaceFileExtension(inFile.getName(), "gen.mod.po");
+		String sufix = "gen";
+		if (args.length > 1) {
+			sufix = args[2];
+		}
+
+		String outFileStr = replaceFileExtension(inFile.getName(), sufix + ".mod.po");
 		File outFile = new File(inFile.getParentFile() , outFileStr);
 		
 		try {
@@ -140,7 +153,7 @@ public class PotLoaderConverter {
 			reader2 = new BufferedReader(new FileReader(inFile2));
 			writer = new BufferedWriter(new FileWriter(outFile));
 			
-			Pattern msgidPat = Pattern.compile("msgid \"(.+?)\"");
+			// Pattern msgidPat = Pattern.compile("msgid \"(.+?)\"");
 			Pattern msgidPatTwo = Pattern.compile("%\\w+");
 			Pattern msgidPatThree = Pattern.compile("€ ?€");
 			
@@ -155,8 +168,8 @@ public class PotLoaderConverter {
 			reader2.readLine();
 
 			while ((line = reader.readLine()) != null) {
-				StateEnum pevState = state;
-				String lineToW = "";
+				// StateEnum pevState = state;
+				// String lineToW = "";
 				switch (state) {
 					case NONE:
 						if (line.startsWith("msgid \"")) {
@@ -176,9 +189,9 @@ public class PotLoaderConverter {
 									replacementsCount++;
 								}
 							}
-							else {
-								lineToW = "";
-							}
+//							else {
+//								lineToW = "";
+//							}
 						}
 						writer.write(line + "\n");
 						break;
@@ -301,32 +314,61 @@ public class PotLoaderConverter {
 		}
 	}
 
+	private static void showHelpAndExit(int exitCode) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(PotLoaderConverter.class.getSimpleName() + " v" + VERSION);
+		sb.append("\n");
+		sb.append("\u00A9" + COPY_YEARS + " FEUP-LSTS, All Rights Reserved");
+		sb.append("\n");
+		sb.append("Usage:");
+		sb.append("\n");
+		sb.append("[help]\tPrints this help.");
+		sb.append("\n");
+		sb.append("to-google POT_FILE [OUTPUT_SUFIX]");
+		sb.append("\n\tCreates a TXT output file to be translated by Google Translate.");
+		sb.append("\n");
+		sb.append("from-google POT_FILE GOOLE_TRANSLATED_FILE [OUTPUT_SUFIX]");
+		sb.append("\n\tUses the Google Translated file and generate a PO file.");
+		sb.append("\n");
+		
+		System.out.println(sb.toString());
+		System.exit(exitCode);
+	}
 	
 	public static void main(String[] args) {
 		
+		if (args.length == 0 || "help".equalsIgnoreCase(args[0])) {
+			showHelpAndExit(0);
+		}
+		
 		String ag1 = args.length == 0 ? "" : args[0];
 
-		System.out.println(args.length);
+//		System.out.println(args.length);
 		
 		String[] argsFl = args.length == 0 ? new String[0] : Arrays.copyOfRange(args, 1, args.length);
 		
 		switch (ag1) {
 			case "to-google":
-				phase1(argsFl);
+				if (argsFl.length == 0 || !(new File(argsFl[0])).exists()) {
+					showHelpAndExit(1);
+				}
+				generateFileToGoogleTranslate(argsFl);
 				break;
 			case "from-google":
-				phase2(argsFl);
-				break;
-	
-			default:
-				
-				Pattern msgidPatTwo = Pattern.compile("%\\w+");
-				String line = "df %msg1 sd%msg2 s %msg3";
-				Matcher matcher = msgidPatTwo.matcher(line);
-				while (matcher.find()) {
-					String m1 = matcher.group(0);// line.substring(matcher.start(), matcher.end());
-					System.out.println(m1);
+				if (argsFl.length < 2 || !(new File(argsFl[0])).exists() || !(new File(argsFl[1])).exists()) {
+					showHelpAndExit(2);
 				}
+				generatePOFromGoogleTranslate(argsFl);
+				break;
+			default:
+//				Pattern msgidPatTwo = Pattern.compile("%\\w+");
+//				String line = "df %msg1 sd%msg2 s %msg3";
+//				Matcher matcher = msgidPatTwo.matcher(line);
+//				while (matcher.find()) {
+//					String m1 = matcher.group(0);// line.substring(matcher.start(), matcher.end());
+//					System.out.println(m1);
+//				}
+				showHelpAndExit(0);
 				break;
 		}
 	}
