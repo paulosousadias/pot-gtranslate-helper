@@ -125,6 +125,8 @@ public class PotLoaderConverter {
 				}
 			}
 		}
+		
+		System.out.println("Output written to " + outFile.getName() + ".");
 	}
 
 	public static void generatePOFromGoogleTranslate(String[] args) {
@@ -312,6 +314,7 @@ public class PotLoaderConverter {
 				}
 			}
 		}
+		System.out.println("Output written to " + outFile.getName() + ".");
 	}
 
 	private static void showHelpAndExit(int exitCode) {
