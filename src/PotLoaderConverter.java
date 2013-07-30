@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class PotLoaderConverter {
 
-    private static final String VERSION = "0.1.1";
+    private static final String VERSION = "0.1.2";
 	private static final String COPY_YEARS = "2013";
 
 	public static String replaceFileExtension(String path, String newExtension) {
@@ -41,7 +41,7 @@ public class PotLoaderConverter {
 		File inFile = new File(inFileStr);
 		
 		String sufix = "gen";
-		if (args.length > 0) {
+		if (args.length > 1) {
 			sufix = args[1];
 		}
 		
@@ -85,8 +85,10 @@ public class PotLoaderConverter {
 						}
 						break;
 					case MSG_ID:
-						if (line.startsWith("\"")) {
-							lineToW = line.substring(1, line.length() - 2);
+						// if (line.startsWith("\"")) {
+						if (line.matches(" +\"(.*?)\"")) {
+							// lineToW = line.substring(1, line.length() - 2);
+							lineToW = line.replaceFirst("^ +\"", "").replaceFirst("\"$", "");
 							lineToW = lineToW.replaceAll("%[\\w\\.]+", "€€");
 							writer.write(lineToW + "\n");
 						}
@@ -99,8 +101,10 @@ public class PotLoaderConverter {
 						}
 						break;
 					case MSG_STRING:
-						if (line.startsWith("\"")) {
-							lineToW = line.substring(1, line.length() - 2);
+						// if (line.startsWith("\"")) {
+						if (line.matches(" +\"(.*?)\"")) {
+							// lineToW = line.substring(1, line.length() - 2);
+							lineToW = line.replaceFirst("^ +\"", "").replaceFirst("\"$", "");
 							writer.write(lineToW + "\n");
 						}
 						else {
@@ -152,7 +156,7 @@ public class PotLoaderConverter {
 		File inFile2 = new File(inFile2Str);
 		
 		String sufix = "gen";
-		if (args.length > 1) {
+		if (args.length > 2) {
 			sufix = args[2];
 		}
 
@@ -210,7 +214,8 @@ public class PotLoaderConverter {
 						writer.write(line + "\n");
 						break;
 					case MSG_ID:
-						if (line.startsWith("\"")) {
+						// if (line.startsWith("\"")) {
+						if (line.matches(" +\"(.*?)\"")) {
 							Matcher matcher = msgidPatTwo.matcher(line);
 							while (matcher.find()) {
 								String m1 = matcher.group(0);// line.substring(matcher.start(), matcher.end());
@@ -255,7 +260,8 @@ public class PotLoaderConverter {
 						writer.write(line + "\n");
 						break;
 					case MSG_STRING:
-						if (line.startsWith("\"")) {
+						// if (line.startsWith("\"")) {
+						if (line.matches(" +\"(.*?)\"")) {
 							// let us read from the translation
 							boolean first = true;
 							line = "";
