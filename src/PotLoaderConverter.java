@@ -86,9 +86,9 @@ public class PotLoaderConverter {
 						break;
 					case MSG_ID:
 						// if (line.startsWith("\"")) {
-						if (line.matches(" +\"(.*?)\"")) {
+						if (line.matches(" *\"(.*?)\"")) {
 							// lineToW = line.substring(1, line.length() - 2);
-							lineToW = line.replaceFirst("^ +\"", "").replaceFirst("\"$", "");
+							lineToW = line.replaceFirst("^ *\"", "").replaceFirst("\"$", "");
 							lineToW = lineToW.replaceAll("%[\\w\\.]+", "€€");
 							writer.write(lineToW + "\n");
 						}
@@ -104,7 +104,7 @@ public class PotLoaderConverter {
 						// if (line.startsWith("\"")) {
 						if (line.matches(" +\"(.*?)\"")) {
 							// lineToW = line.substring(1, line.length() - 2);
-							lineToW = line.replaceFirst("^ +\"", "").replaceFirst("\"$", "");
+							lineToW = line.replaceFirst("^ *\"", "").replaceFirst("\"$", "");
 							writer.write(lineToW + "\n");
 						}
 						else {
@@ -201,13 +201,13 @@ public class PotLoaderConverter {
 									replacementsList.add(m1);
 									replacementsCount++;
 								}
-								line = "#, fuzzy\n" + line;
 							}
+							line = "#, fuzzy\n" + line;
 						}
 						writer.write(line + "\n");
 						break;
 					case MSG_ID:
-						if (line.matches(" +\"(.*?)\"")) {
+						if (line.matches(" *\"(.*?)\"")) {
 							Matcher matcher = msgidPatTwo.matcher(line);
 							while (matcher.find()) {
 								String m1 = matcher.group(0);// line.substring(matcher.start(), matcher.end());
@@ -250,7 +250,7 @@ public class PotLoaderConverter {
 						writer.write(line + "\n");
 						break;
 					case MSG_STRING:
-						if (line.matches(" +\"(.*?)\"")) {
+						if (line.matches(" *\"(.*?)\"")) {
 							// let us read from the translation
 							boolean first = true;
 							line = "";
