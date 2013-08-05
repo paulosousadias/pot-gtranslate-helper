@@ -183,13 +183,9 @@ public class PotLoaderConverter {
 			reader2.readLine();
 
 			while ((line = reader.readLine()) != null) {
-				// StateEnum pevState = state;
-				// String lineToW = "";
 				switch (state) {
 					case NONE:
-						// if (line.startsWith("msgid \"")) {
 						if (line.matches("msgid +\"(.*?)\"")) {
-							// if (line.equals("msgid \"\"") && headerEmptyMsgId) {
 							if (line.matches("msgid +\"\"") && headerEmptyMsgId) {
 								headerEmptyMsgId = false;
 								writer.write(line + "\n");
@@ -197,7 +193,6 @@ public class PotLoaderConverter {
 							}
 							
 							state = StateEnum.MSG_ID;
-							// if (!line.equals("msgid \"\"")) {
 							if (!line.matches("msgid +\"\"")) {
 								Matcher matcher = msgidPatTwo.matcher(line);
 								while (matcher.find()) {
@@ -206,16 +201,12 @@ public class PotLoaderConverter {
 									replacementsList.add(m1);
 									replacementsCount++;
 								}
+								line = "#, fuzzy\n" + line;
 							}
-//							else {
-//								lineToW = "";
-//							}
-							line = "#, fuzzy\n" + line;
 						}
 						writer.write(line + "\n");
 						break;
 					case MSG_ID:
-						// if (line.startsWith("\"")) {
 						if (line.matches(" +\"(.*?)\"")) {
 							Matcher matcher = msgidPatTwo.matcher(line);
 							while (matcher.find()) {
@@ -225,7 +216,6 @@ public class PotLoaderConverter {
 								replacementsCount++;
 							}
 						}
-						//else if (line.startsWith("msgstr \"")) {
 						else if (line.matches("msgstr +\"(.*?)\"")) {
 							state = StateEnum.MSG_STRING;
 							// let us read from the translation
@@ -246,7 +236,6 @@ public class PotLoaderConverter {
 								}
 								
 								System.out.println(">>  " + "  #" + toReplaceList.size() + ":" + replacementsList.size() + ":" + index);
-								//line2 = line2.replaceAll("€ €", "€€");
 								for (int i = 0; i < replacementsList.size(); i++) {
 									line2 = line2.replaceFirst("€ ?€", replacementsList.get(i));
 								}
@@ -261,7 +250,6 @@ public class PotLoaderConverter {
 						writer.write(line + "\n");
 						break;
 					case MSG_STRING:
-						// if (line.startsWith("\"")) {
 						if (line.matches(" +\"(.*?)\"")) {
 							// let us read from the translation
 							boolean first = true;
@@ -281,7 +269,6 @@ public class PotLoaderConverter {
 								}
 
 								System.out.println("  " + "  #" + toReplaceList.size() + ":" + replacementsList.size() + ":" + index);
-								//line2 = line2.replaceAll("€ €", "€€");
 								for (int i = 0; i < replacementsList.size(); i++) {
 									line2 = line2.replaceFirst("€ ?€", replacementsList.get(i));
 								}
