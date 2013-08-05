@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class PotLoaderConverter {
 
-    private static final String VERSION = "0.1.2";
+    private static final String VERSION = "0.1.3";
 	private static final String COPY_YEARS = "2013";
 
 	public static String replaceFileExtension(String path, String newExtension) {
