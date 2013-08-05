@@ -210,6 +210,7 @@ public class PotLoaderConverter {
 //							else {
 //								lineToW = "";
 //							}
+							line = "#, fuzzy\n" + line;
 						}
 						writer.write(line + "\n");
 						break;
