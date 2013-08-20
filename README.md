@@ -5,9 +5,11 @@ Is a kick starter google translatable po generator in 2 steps.
 
 
 Usage:
+
 [help]	Prints this help.
 
 to-google POT_FILE [OUTPUT_SUFIX]
+
 	Creates a TXT output file to be translated by Google Translate.
 	(This will take a POT file and output a text file to be loaded 
 	to Google Translate. Once translated, copy&paste the translated
@@ -16,7 +18,8 @@ to-google POT_FILE [OUTPUT_SUFIX]
 	input to phase 2.)
 
 from-google POT_FILE GOOLE_TRANSLATED_FILE [OUTPUT_SUFIX]
+
 	Uses the Google Translated file and generate a PO file.
-  (The inpit will be the original POT file and the file with the 
-  translation from Google Translate, and will output the PO file.
-  All entries will be marked as fuzzy.)
+	(The inpit will be the original POT file and the file with the 
+	translation from Google Translate, and will output the PO file.
+	All entries will be marked as fuzzy.)
